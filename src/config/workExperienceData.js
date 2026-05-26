@@ -20,6 +20,7 @@ export const workExperiences = [
         highlights: [
           'Conducted research on robust, interpretable AI systems, focusing on how learning algorithms interact with structured knowledge and real-world uncertainty, grounded in the foundations of AI such as logic, knowledge representation, and category theory.',
           'Developed a formal framework and categorical/logical structures for machines and databases, improving the interpretability and consistency of AI systems.',
+          'Conducted many production-level, end-to-end big data machine learning projects; examples are featured on the Projects page.',
           'Published and presented research at international conferences and invited talks in mathematics and computer science communities.',
         ],
       },
