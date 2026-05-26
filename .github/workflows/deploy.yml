@@ -3,38 +3,56 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.js'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+
       - run: npm ci
       - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Sync built site to repository root
+        run: |
+          cp dist/index.html index.html
+          rsync -a dist/assets/ assets/
+          rsync -a dist/css/ css/
+          rsync -a dist/img/ img/
+          rsync -a dist/favicon/ favicon/
+          rsync -a dist/fonts/ fonts/
+          cp dist/sitemap.xml sitemap.xml
+          cp dist/google62d20764aea913d1.html google62d20764aea913d1.html
+
+      - name: Commit and push built site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html assets css img favicon fonts sitemap.xml google62d20764aea913d1.html
+          if git diff --staged --quiet; then
+            echo "No deploy changes to commit."
+            exit 0
+          fi
+          git commit -m "Deploy built site to GitHub Pages"
+          git push
