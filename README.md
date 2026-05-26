@@ -1,7 +1,7 @@
 # Shayesteh (Shay) Naeim – Personal Website
 
 Welcome to my personal website repository.  
-This site showcases my portfolio and contact info — built with React and the same visual design as the original static site.
+This site showcases my portfolio and contact info — built with React.
 
 ---
 
